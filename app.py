@@ -54,23 +54,24 @@ def callback():
         app.logger.info(
             "Invalid signature. Please check your channel access token/channel secret.")
         abort(400)
-
-    @handler.add(MessageEvent, message=TextMessageContent)
-    def handle_message(event):
-        with ApiClient(configuration) as api_client:
-            line_bot_api = MessagingApi(api_client)
-            return_msgs = deal_with_user_text_request_and_return_text_response(event.source.user_id,
-                                                                               event.message.text)
-
-            line_messages = [TextMessage(text=msg) for msg in return_msgs]
-
-            line_bot_api.reply_message_with_http_info(
-                ReplyMessageRequest(
-                    reply_token=event.reply_token,
-                    messages=line_messages
-                )
-            )
     return 'OK'
+
+
+@handler.add(MessageEvent, message=TextMessageContent)
+def handle_message(event):
+    with ApiClient(configuration) as api_client:
+        line_bot_api = MessagingApi(api_client)
+        return_msgs = deal_with_user_text_request_and_return_text_response(event.source.user_id, event.message.text)
+
+        line_messages = [TextMessage(text=msg) for msg in return_msgs]
+
+        line_bot_api.reply_message_with_http_info(
+            ReplyMessageRequest(
+                reply_token=event.reply_token,
+                messages=line_messages
+            )
+        )
+        
 
 
 if __name__ == '__main__':

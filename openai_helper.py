@@ -18,7 +18,6 @@ def deal_with_user_text_request_and_return_text_response(line_user_id, user_mess
 
     message = create_new_message(
         thread_id,
-        # content="我需要解決一個等式 `3x + 11 = 14`"
         content=user_message_content
     )
 
@@ -70,13 +69,13 @@ def submit_tool_output(thread_id, run, output_message):
 
 def extract_message_values(messages):
     values = []
+    messages = json.loads(messages.model_dump_json())
     for message in messages['data']:
         # 遍歷每個消息的 'content' 部分
         for content in message['content']:
             if 'text' in content and 'value' in content['text']:
                 values.append(content['text']['value'])
     return values
-
 
 def get_messages_after(thread_id, message):
     """獲取給定 thread_id 中在特定 message 之後的所有訊息。"""
